@@ -4,24 +4,40 @@ import "./App.css";
 import { gof } from 'chi-sq-test';
 
 export default function App() {
-  const [counts, setCounts] = useState([Array(11).fill(0)]);
+  const [counts, setCounts] = useState(Array(11).fill(0));
   const [value, setValue] = useState(null);
 
-  function handleCountsChange(newCounts) {
+  function handleCountsChange(num, newCount) {
+    const newCounts = counts.slice();
+    newCounts[num-2] = newCount;
     setCounts(newCounts);
   }
 
   function handleClick() {
-    const calcCounts = counts.map((x) => x === null ? 0 : x);
-    const newValue = calculateValue(calcCounts);
+    //const calcCounts = counts.map((x) => x === null ? 0 : x);
+    const newValue = calculateValue(counts);
     setValue(newValue);
   }
   
   return (
     <div className="app">
+      <h1>Are My Dice Rigged*?</h1>
+      <p>*Based on a Chi-Square goodness of fit test</p>
+      <hr/>
+      <p>Enter the counts of each sum of 2 dice rolled:</p>
       <NumberInputPanel counts={counts} onCountsChange={handleCountsChange} />
       <button className="calculate-button" onClick={handleClick}>Calculate</button>
       <div className="calculate-result">{value}</div>
+      <div className="info">
+        <p>Helpful links</p>
+        <a href="https://statisticsbyjim.com/hypothesis-testing/interpreting-p-values/">
+          How to interpret a p-value
+        </a>
+        <a href="https://www.jmp.com/en_us/statistics-knowledge-portal/chi-square-test.html">
+          Learn more about Chi-Square goodness of fit tests 
+        </a>
+        
+      </div>
     </div>
 
   );
@@ -30,9 +46,7 @@ export default function App() {
 
 function NumberInputPanel({counts, onCountsChange}) {
   function handleCountChange(num, newCount) {
-    const nextCounts = counts.slice();
-    nextCounts[num-2] = newCount;
-    onCountsChange(nextCounts);
+    onCountsChange(num, newCount);
   }
 
 
@@ -66,7 +80,7 @@ function NumberInput({ num, onCountChange }) {
   };
 
   return (
-    <>
+    <div className="number-box">
       <div className = "number-label">{num}</div>
       <input
         className = "number-input"
@@ -75,7 +89,7 @@ function NumberInput({ num, onCountChange }) {
         value={value}
         onChange={handleInputChange}
       />
-    </>
+    </div>
   );
 }
 
