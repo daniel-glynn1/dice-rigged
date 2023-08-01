@@ -1,11 +1,63 @@
-import { useState } from "react";
+import React, { useState } from 'react';
+import { gof } from 'chi-sq-test';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
 import "./App.css";
 
-import { gof } from 'chi-sq-test';
+// chart info
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Legend
+);
+
+ChartJS.defaults.font.family = 'Arial';
+ChartJS.defaults.font.size = 16;
+ChartJS.defaults.color = "#ffffff";
+
+const labels = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+const options = {
+  plugins: {
+    title: {
+      display: true,
+      text: 'Dice Stats'
+    }
+  }
+}
+
 
 export default function App() {
   const [counts, setCounts] = useState(Array(11).fill(0));
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(0);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: "Actual",
+        data: counts,
+        backgroundColor: "#7209B760",
+        grouped: false
+      },
+      {
+        label: "Expected",
+        data: calculateExpected(counts),
+        backgroundColor: "#88888860",
+        grouped: false
+      }
+    ]
+  };
 
   function handleCountsChange(num, newCount) {
     const newCounts = counts.slice();
@@ -13,31 +65,65 @@ export default function App() {
     setCounts(newCounts);
   }
 
-  function handleClick() {
-    //const calcCounts = counts.map((x) => x === null ? 0 : x);
+  function handleCalculate() {
     const newValue = calculateValue(counts);
     setValue(newValue);
+
+    setIsSubmitted(true);
+  }
+
+  function handleGoBack() {
+    const newCounts = Array(11).fill(0);
+    setCounts(newCounts);
+
+    setIsSubmitted(false);
   }
   
   return (
     <div className="app">
-      <h1>Are My Dice Rigged*?</h1>
-      <p>*Based on a Chi-Square goodness of fit test</p>
+      <h1>Are My Dice Rigged<em>*</em>?</h1>
+      <p><em>*</em>Based on a Chi-Square goodness of fit test</p>
       <hr/>
-      <p>Enter the counts of each sum of 2 dice rolled:</p>
-      <NumberInputPanel counts={counts} onCountsChange={handleCountsChange} />
-      <button className="calculate-button" onClick={handleClick}>Calculate</button>
-      <div className="calculate-result">{value}</div>
-      <div className="info">
-        <p>Helpful links</p>
-        <a href="https://statisticsbyjim.com/hypothesis-testing/interpreting-p-values/">
-          How to interpret a p-value
-        </a>
-        <a href="https://www.jmp.com/en_us/statistics-knowledge-portal/chi-square-test.html">
-          Learn more about Chi-Square goodness of fit tests 
-        </a>
-        
+
+      { !isSubmitted ? <p>Enter the number of times each sum was rolled (2 dice):</p> : <></>}
+
+      <div className="number-chart-box">
+        {isSubmitted ? 
+          <Bar data={data} options={options} /> :
+          <NumberInputPanel counts={counts} onCountsChange={handleCountsChange} />
+        }
       </div>
+      
+      { !isSubmitted ? 
+        <button className="calculate-button" onClick={handleCalculate}>Calculate</button> :
+        <button className="calculate-button" onClick={handleGoBack}>Go back</button>
+      }
+    
+      
+      { isSubmitted ?
+      <>
+        <div className="calculate-result">
+          <p>P-value = <em className={value < 0.05 ? "rejected" : "not-rejected" }>{value.toFixed(4)}</em></p>
+          <p>
+            <em className={value < 0.05 ? "rejected" : "not-rejected" }>{value.toFixed(4)}</em> {value < 0.05 ? "<" : ">"} 0.05 
+            so there <em className={value < 0.05 ? "rejected" : "not-rejected" }>{value < 0.05 ? "IS" : "IS NOT"}</em> sufficient evidence that these dice do not follow their expected distribution.
+          </p>
+          {/* <p>{value < 0.05 ? "(Or you are just very lucky/unlucky, but at least now you have statistical evidence of that!)" : ""}</p> */}
+        </div>
+
+        <div className="info">
+          <p>Helpful links</p>
+          <a href="https://statisticsbyjim.com/hypothesis-testing/interpreting-p-values/">
+            How to interpret a p-value
+          </a>
+          <a href="https://www.jmp.com/en_us/statistics-knowledge-portal/chi-square-test.html">
+            Learn more about Chi-Square goodness of fit tests 
+          </a>
+          
+        </div>
+      </> :
+      <></>
+      }
     </div>
 
   );
@@ -92,6 +178,26 @@ function NumberInput({ num, onCountChange }) {
     </div>
   );
 }
+
+// function ChartComponent({ data }) {
+//   const chartRef = useRef(null);
+
+//   useEffect(() => {
+//     const ctx = chartRef.current.getContext('2d');
+//     new Chart(ctx, {
+//       type: 'bar',
+//       data: data,
+//       options: {
+//         // Customize chart options here
+//       }
+//     });
+//   }, [data]);
+
+//   return <canvas ref={chartRef} />;
+// }
+
+
+
 
 // helper functions to calculate p value
 function calculateValue(counts) {
