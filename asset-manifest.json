@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/daniel-glynn1.github.io/dice-rigged/static/css/main.b47a5a1c.css",
+    "main.js": "/daniel-glynn1.github.io/dice-rigged/static/js/main.036caac4.js",
+    "index.html": "/daniel-glynn1.github.io/dice-rigged/index.html",
+    "main.b47a5a1c.css.map": "/daniel-glynn1.github.io/dice-rigged/static/css/main.b47a5a1c.css.map",
+    "main.036caac4.js.map": "/daniel-glynn1.github.io/dice-rigged/static/js/main.036caac4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b47a5a1c.css",
+    "static/js/main.036caac4.js"
+  ]
+}
