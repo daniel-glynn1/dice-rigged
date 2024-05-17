@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/dice-rigged/static/css/main.b47a5a1c.css",
-    "main.js": "/dice-rigged/static/js/main.036caac4.js",
+    "main.css": "/dice-rigged/static/css/main.fbb498a1.css",
+    "main.js": "/dice-rigged/static/js/main.4a791c00.js",
     "index.html": "/dice-rigged/index.html",
-    "main.b47a5a1c.css.map": "/dice-rigged/static/css/main.b47a5a1c.css.map",
-    "main.036caac4.js.map": "/dice-rigged/static/js/main.036caac4.js.map"
+    "main.fbb498a1.css.map": "/dice-rigged/static/css/main.fbb498a1.css.map",
+    "main.4a791c00.js.map": "/dice-rigged/static/js/main.4a791c00.js.map"
   },
   "entrypoints": [
-    "static/css/main.b47a5a1c.css",
-    "static/js/main.036caac4.js"
+    "static/css/main.fbb498a1.css",
+    "static/js/main.4a791c00.js"
   ]
 }
