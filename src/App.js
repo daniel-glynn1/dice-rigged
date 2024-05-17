@@ -32,7 +32,8 @@ const options = {
       display: true,
       text: 'Dice Stats'
     }
-  }
+  },
+  maintainAspectRatio: false
 }
 
 
@@ -40,6 +41,7 @@ export default function App() {
   const [counts, setCounts] = useState(Array(11).fill(0));
   const [value, setValue] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
 
   const data = {
     labels: labels,
@@ -66,6 +68,17 @@ export default function App() {
   }
 
   function handleCalculate() {
+    let sum = counts.reduce((partialSum, a) => partialSum + a, 0);
+    if (sum < 10) {
+      setIsErrorMessage(true);
+
+      setTimeout(() => {
+        setIsErrorMessage(false);
+      }, 1000);
+      return;
+    }
+
+
     const newValue = calculateValue(counts);
     setValue(newValue);
 
@@ -83,20 +96,27 @@ export default function App() {
     <div className="app">
       <h1>Are My Dice Rigged<em>*</em>?</h1>
       <p><em>*</em>Based on a Chi-Square goodness of fit test</p>
-      <hr/>
 
       { !isSubmitted ? <p>Enter the number of times each sum was rolled (2 dice):</p> : <></>}
 
-      <div className="number-chart-box">
-        {isSubmitted ? 
-          <Bar data={data} options={options} /> :
+      
+      {isSubmitted ? 
+        <div className="chart-box">
+          <Bar data={data} options={options} />
+        </div> :
+        <div className="number-box">
           <NumberInputPanel counts={counts} onCountsChange={handleCountsChange} />
-        }
-      </div>
+        </div> 
+      }
       
       { !isSubmitted ? 
-        <button className="calculate-button" onClick={handleCalculate}>Calculate</button> :
+        <button className="calculate-button" disabled={isErrorMessage} onClick={handleCalculate}>Calculate</button> :
         <button className="calculate-button" onClick={handleGoBack}>Go back</button>
+      }
+
+      { isErrorMessage && !isSubmitted ?
+        <p><em className="rejected">Sample size must be at least 10</em></p>
+        : <></>
       }
     
       
@@ -178,26 +198,6 @@ function NumberInput({ num, onCountChange }) {
     </div>
   );
 }
-
-// function ChartComponent({ data }) {
-//   const chartRef = useRef(null);
-
-//   useEffect(() => {
-//     const ctx = chartRef.current.getContext('2d');
-//     new Chart(ctx, {
-//       type: 'bar',
-//       data: data,
-//       options: {
-//         // Customize chart options here
-//       }
-//     });
-//   }, [data]);
-
-//   return <canvas ref={chartRef} />;
-// }
-
-
-
 
 // helper functions to calculate p value
 function calculateValue(counts) {

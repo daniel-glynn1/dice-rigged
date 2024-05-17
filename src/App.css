@@ -31,14 +31,21 @@ input::-webkit-inner-spin-button {
   padding: 20px;
 }
 
-.number-chart-box {
-  width: 600px;
+.chart-box {
+  position: relative;
+  width: 60vw;
+  height: 40vh;
+  margin-bottom: 10px;
+}
+
+.number-box {
   margin-bottom: 10px;
 }
 
 .number-row {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
   padding: 10px;
@@ -79,12 +86,19 @@ input::-webkit-inner-spin-button {
   border-radius: 5px;
 }
 
+.calculate-button:disabled {
+  background-color: #666666;
+}
+
 .calculate-result {
   margin-top: 10px;
   font-size: 18px;
   text-align: center;
-  width: 600px;
+  /* width: 600px; */
+  max-width: 600px;
 }
+
+
 
 .rejected {
   color: #FF220C;
@@ -101,4 +115,12 @@ input::-webkit-inner-spin-button {
   justify-content: center;
   text-align: center;
   gap: 10px;
+}
+
+
+@media (max-width: 750px) {
+  .chart-box {
+    width: 90vw;
+    height: 30vh;
+  }
 }
